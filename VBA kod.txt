@@ -1,0 +1,53 @@
+Sub Duplicate_scanner()
+
+Dim i As Integer
+Dim j As Integer
+Dim n As Integer
+Dim k As Integer
+Dim wynik As String
+
+n = InputBox("How many rows to check?")
+k = InputBox("How many columns to check?")
+
+For i = 1 To n - 1
+For j = i + 1 To n
+
+If Join(Application.Transpose(Application.Transpose(Range(Cells(i, 1), Cells(i, k)).Value)), "|") = Join(Application.Transpose(Application.Transpose(Range(Cells(j, 1), Cells(j, k)).Value)), "|") Then
+wynik = wynik & "(" & i & "," & j & ") "
+End If
+
+Next j
+Next i
+
+MsgBox "Duplicates: " & wynik
+
+End Sub
+Sub Duplicate_remover()
+
+Dim i As Integer
+Dim j As Integer
+Dim n As Integer
+Dim k As Integer
+
+n = InputBox("How many rows to check?")
+k = InputBox("How many columns to check?")
+
+For i = 1 To n - 1
+For j = i + 1 To n
+
+If Join(Application.Transpose(Application.Transpose(Range(Cells(i, 1), Cells(i, k)).Value)), "|") = Join(Application.Transpose(Application.Transpose(Range(Cells(j, 1), Cells(j, k)).Value)), "|") Then
+Range(Cells(j, 1), Cells(j, 10)).Value = ""
+End If
+
+Next j
+Next i
+
+For i = n To 1 Step -1
+If Application.WorksheetFunction.CountA(Range(Cells(i, 1), Cells(i, k))) = 0 Then
+'CountA zlicza niepuste komórki
+Rows(i).Delete
+End If
+Next i
+
+
+End Sub
