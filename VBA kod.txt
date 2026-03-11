@@ -44,10 +44,10 @@ Next i
 
 For i = n To 1 Step -1
 If Application.WorksheetFunction.CountA(Range(Cells(i, 1), Cells(i, k))) = 0 Then
-'CountA zlicza niepuste komórki
 Rows(i).Delete
 End If
 Next i
+
 
 
 End Sub
