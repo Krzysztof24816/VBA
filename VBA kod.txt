@@ -22,6 +22,10 @@ Next i
 MsgBox "Duplicates: " & wynik
 
 End Sub
+
+
+
+
 Sub Duplicate_remover()
 
 Dim i As Integer
