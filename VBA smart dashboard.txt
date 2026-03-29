@@ -1,0 +1,108 @@
+Sub SmartDashboard()
+
+Dim zakres As Range
+Dim dane As Variant
+Dim ws As Worksheet
+Dim pc As PivotCache
+Dim pt As PivotTable
+Dim ch As ChartObject
+Dim scData As SlicerCache
+Dim scKlient As SlicerCache
+
+Dim nazwaData As String
+Dim nazwaKlient As String
+Dim i As Long
+
+Set zakres = Selection
+dane = zakres.Value
+
+' nowy arkusz
+Set ws = Worksheets.Add
+
+' pivot cache
+Set pc = ActiveWorkbook.PivotCaches.Create( _
+    SourceType:=xlDatabase, _
+    SourceData:=zakres)
+
+' tabela przestawna (lewa strona)
+Set pt = pc.CreatePivotTable( _
+    TableDestination:=ws.Range("A3"))
+
+' nazwy kolumn
+nazwaData = dane(1, 1)
+nazwaKlient = dane(1, 2)
+
+With pt
+    
+    ' Data › wiersze
+    .PivotFields(nazwaData).Orientation = xlRowField
+    
+    ' Klient › filtr
+    .PivotFields(nazwaKlient).Orientation = xlPageField
+    
+    ' wartości (kolumny numeryczne)
+    For i = 3 To UBound(dane, 2)
+        If IsNumeric(dane(2, i)) Then
+            .AddDataField .PivotFields(dane(1, i)), "Suma " & dane(1, i), xlSum
+        End If
+    Next i
+
+End With
+
+' ?? wykres (środek)
+Set ch = ws.ChartObjects.Add(Left:=300, Top:=30, Width:=500, Height:=300)
+
+With ch.Chart
+    .SetSourceData pt.TableRange1
+    .ChartType = xlColumnClustered
+    
+    ' tytuł wykresu
+    .HasTitle = True
+    .ChartTitle.Text = "Analiza danych sprzedażowych poszczególnych klientów (suma wartości)"
+    
+    ' nazwy osi
+    .Axes(xlCategory).HasTitle = True
+    .Axes(xlCategory).AxisTitle.Text = nazwaData
+    
+    .Axes(xlValue).HasTitle = True
+    .Axes(xlValue).AxisTitle.Text = "Suma wartości"
+    
+    ' legenda
+    .HasLegend = True
+
+End With
+
+' ??? fragmentator klienta (po prawej)
+Set scKlient = ActiveWorkbook.SlicerCaches.Add(pt, nazwaKlient)
+scKlient.Slicers.Add ws, , "Klient", "Wybierz klienta", _
+    ch.Top, ch.Left + ch.Width + 20, 150, 200
+
+' ?? timeline (tuż pod wykresem)
+On Error Resume Next
+Set scData = ActiveWorkbook.SlicerCaches.Add2(pt, nazwaData, , xlTimeline)
+
+With scData.Slicers(1)
+    .Top = ch.Top + ch.Height + 10
+    .Left = ch.Left
+    .Width = ch.Width
+    .Height = 80
+End With
+
+On Error GoTo 0
+
+' ?? komunikat dla użytkownika
+MsgBox "Makro utworzyło automatyczny dashboard:" & vbCrLf & vbCrLf & _
+       "1. Tabela przestawna została utworzona po lewej stronie arkusza." & vbCrLf & _
+       "   - Pierwsza kolumna (" & nazwaData & ") została użyta jako wiersze." & vbCrLf & _
+       "   - Druga kolumna (" & nazwaKlient & ") została użyta jako filtr." & vbCrLf & _
+       "   - Pozostałe kolumny numeryczne zostały zsumowane." & vbCrLf & vbCrLf & _
+       "2. Wykres kolumnowy pokazuje zagregowane dane." & vbCrLf & _
+       "   - Oś pozioma: " & nazwaData & vbCrLf & _
+       "   - Oś pionowa: suma wartości." & vbCrLf & vbCrLf & _
+       "3. Fragmentatory:" & vbCrLf & _
+       "   - Po prawej: wybór klienta." & vbCrLf & _
+       "   - Pod wykresem: oś czasu (filtrowanie po dacie)." & vbCrLf & vbCrLf & _
+       "Możesz filtrować dane, klikając przyciski fragmentatorów.", _
+       vbInformation, "Opis działania makra"
+
+End Sub
