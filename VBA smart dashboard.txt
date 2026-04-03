@@ -24,7 +24,7 @@ Set pc = ActiveWorkbook.PivotCaches.Create( _
     SourceType:=xlDatabase, _
     SourceData:=zakres)
 
-' tabela przestawna (lewa strona)
+' tabela przestawna 
 Set pt = pc.CreatePivotTable( _
     TableDestination:=ws.Range("A3"))
 
@@ -40,7 +40,7 @@ With pt
     ' Klient › filtr
     .PivotFields(nazwaKlient).Orientation = xlPageField
     
-    ' wartości (kolumny numeryczne)
+    ' wartości 
     For i = 3 To UBound(dane, 2)
         If IsNumeric(dane(2, i)) Then
             .AddDataField .PivotFields(dane(1, i)), "Suma " & dane(1, i), xlSum
@@ -49,7 +49,7 @@ With pt
 
 End With
 
-' ?? wykres (środek)
+'  wykres 
 Set ch = ws.ChartObjects.Add(Left:=300, Top:=30, Width:=500, Height:=300)
 
 With ch.Chart
@@ -72,12 +72,12 @@ With ch.Chart
 
 End With
 
-' ??? fragmentator klienta (po prawej)
+'  fragmentator klienta 
 Set scKlient = ActiveWorkbook.SlicerCaches.Add(pt, nazwaKlient)
 scKlient.Slicers.Add ws, , "Klient", "Wybierz klienta", _
     ch.Top, ch.Left + ch.Width + 20, 150, 200
 
-' ?? timeline (tuż pod wykresem)
+'  timeline 
 On Error Resume Next
 Set scData = ActiveWorkbook.SlicerCaches.Add2(pt, nazwaData, , xlTimeline)
 
@@ -90,7 +90,7 @@ End With
 
 On Error GoTo 0
 
-' ?? komunikat dla użytkownika
+' komunikat dla użytkownika
 MsgBox "Makro utworzyło automatyczny dashboard:" & vbCrLf & vbCrLf & _
        "1. Tabela przestawna została utworzona po lewej stronie arkusza." & vbCrLf & _
        "   - Pierwsza kolumna (" & nazwaData & ") została użyta jako wiersze." & vbCrLf & _
