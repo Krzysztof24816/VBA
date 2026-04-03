@@ -91,18 +91,17 @@ End With
 On Error GoTo 0
 
 ' komunikat dla użytkownika
-MsgBox "Makro utworzyło automatyczny dashboard:" & vbCrLf & vbCrLf & _
-       "1. Tabela przestawna została utworzona po lewej stronie arkusza." & vbCrLf & _
-       "   - Pierwsza kolumna (" & nazwaData & ") została użyta jako wiersze." & vbCrLf & _
-       "   - Druga kolumna (" & nazwaKlient & ") została użyta jako filtr." & vbCrLf & _
-       "   - Pozostałe kolumny numeryczne zostały zsumowane." & vbCrLf & vbCrLf & _
-       "2. Wykres kolumnowy pokazuje zagregowane dane." & vbCrLf & _
-       "   - Oś pozioma: " & nazwaData & vbCrLf & _
-       "   - Oś pionowa: suma wartości." & vbCrLf & vbCrLf & _
-       "3. Fragmentatory:" & vbCrLf & _
-       "   - Po prawej: wybór klienta." & vbCrLf & _
-       "   - Pod wykresem: oś czasu (filtrowanie po dacie)." & vbCrLf & vbCrLf & _
-       "Możesz filtrować dane, klikając przyciski fragmentatorów.", _
-       vbInformation, "Opis działania makra"
-
+MsgBox "An automated dashboard has been successfully created." & vbCrLf & vbCrLf & _
+       "1. A pivot table has been generated on the left side of the worksheet:" & vbCrLf & _
+       "   • The first column (" & nazwaData & ") is used as row labels." & vbCrLf & _
+       "   • The second column (" & nazwaKlient & ") is used as a report filter." & vbCrLf & _
+       "   • All remaining numeric columns have been aggregated (sum)." & vbCrLf & vbCrLf & _
+       "2. A column chart has been created to visualize the aggregated data:" & vbCrLf & _
+       "   • X-axis: " & nazwaData & vbCrLf & _
+       "   • Y-axis: aggregated values." & vbCrLf & vbCrLf & _
+       "3. Interactive filters have been added:" & vbCrLf & _
+       "   • Client slicer (located on the right)." & vbCrLf & _
+       "   • Timeline filter for date selection (located below the chart)." & vbCrLf & vbCrLf & _
+       "Use the slicers to dynamically filter and explore the data.", _
+       vbInformation, "Dashboard Created"
 End Sub
